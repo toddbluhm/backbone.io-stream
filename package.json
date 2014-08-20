@@ -1,0 +1,28 @@
+{
+  "name": "backbone.io-stream",
+  "version": "0.0.1",
+  "author": "Todd Bluhm",
+  "description": "This package extends backbone.sync method to support sending streams over socket.io using socket.io-streaming to backbone models and collections",
+  "scripts": {
+    "test": "grunt"
+  },
+  "main": "./backbone.io-stream",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-browserify": "^2.1.4",
+    "grunt-contrib-connect": "^0.8.0",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-contrib-uglify": "^0.5.1",
+    "grunt-mocha-phantomjs": "^0.6.0",
+    "grunt-mocha-test": "^0.11.0",
+    "mocha": "^1.21.4",
+    "should": "^4.0.4",
+    "socket.io-client": "^1.0.6"
+  },
+  "dependencies": {
+    "backbone": "^1.1.2",
+    "socket.io": "^1.0.6",
+    "socket.io-stream": "^0.5.3",
+    "underscore": "^1.6.0"
+  }
+}
