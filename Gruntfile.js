@@ -35,21 +35,25 @@ module.exports = function(grunt) {
     // },
 
     browserify: {
-      standalone: {
+      standaloneUMD: {
         src: [ '<%= pkg.name %>.js' ],
         dest: './browser/dist/<%= pkg.name %>.standalone.js',
         options: {
-          bundleOptions: {
+          browserifyOptions: {
             standalone: '<%= pkg.name %>'
           }
-        }
+        },
       },
 
-      require: {
+      requireUMD: {
         src: [ '<%= pkg.name %>.js' ],
         dest: './browser/dist/<%= pkg.name %>.require.js',
         options: {
-          alias: [ './<%= pkg.name %>.js:' ]
+          alias: [ './../<%= pkg.name %>:' ],
+          external: ['underscore', 'backbone', 'socket.io-stream'],
+          browserifyOptions: {
+            standalone: '<%= pkg.name %>'
+          }
         }
       },
 
@@ -57,7 +61,7 @@ module.exports = function(grunt) {
         src: [ 'browser/test/suite.js' ],
         dest: './browser/test/browserified_tests.js',
         options: {
-          external: [ './<%= pkg.name %>.js' ],
+          exclude: ['jsdom'],
           // Embed source map for tests
           debug: true
         }
@@ -68,18 +72,25 @@ module.exports = function(grunt) {
       dist: {
         files: {
           'browser/dist/<%= pkg.name %>.standalone.min.js':
-              ['<%= browserify.standalone.dest %>'],
+              ['<%= browserify.standaloneUMD.dest %>'],
           'browser/dist/<%= pkg.name %>.require.min.js':
-              ['<%= browserify.require.dest %>'],
+              ['<%= browserify.requireUMD.dest %>'],
         }
       }
     },
 
     connect: {
-      server: {},
-      keepalive: {
+      testServer: {
         options: {
-          keepalive: true
+          port: 1337,
+          hostname: '127.0.0.1',
+          onCreateServer: require('./test/testServer')
+        }
+      },
+      phantomServer: {
+        options: {
+          port: 8000,
+          base: '.'
         }
       }
     },
@@ -108,10 +119,11 @@ module.exports = function(grunt) {
   // define tasks
   grunt.registerTask('default', [
     'jshint',
+    'connect:testServer',
     'mochaTest',
     'browserify',
     'uglify',
-    'connect:server',
-    'mocha_phantomjs'
+    'connect:phantomServer',
+    'mocha_phantomjs',
   ]);
 };

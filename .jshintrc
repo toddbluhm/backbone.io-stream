@@ -11,7 +11,7 @@
   "immed": true,
   "indent": 2,
   "latedef": false,
-  "maxcomplexity": 6,
+  "maxcomplexity": 20,
   "maxdepth": 4,
   "maxlen": 80,
   "maxparams": 4,
