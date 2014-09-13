@@ -34,7 +34,12 @@ var collectionSync = function CollectionSync (method, model, options) {
     }),
     data = [];
 
-  ss(io).emit(namespace + ':' + method, stream, params.data);
+  ss(io).emit(namespace + ':' + method, stream, params.data || {},
+  function(err) {
+    if(err) {
+      options.error(err);
+    }
+  });
 
   stream.on('readable', function() {
     var string = stream.read();
