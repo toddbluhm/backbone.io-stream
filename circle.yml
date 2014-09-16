@@ -1,0 +1,5 @@
+machine:
+  environment:
+    NODE_ENV: development
+  node:
+    version: v0.10.31

@@ -2,7 +2,7 @@ var _ = require('underscore'),
   Backbone = require('backbone'),
   ss = require('socket.io-stream');
 
-var collectionSync = function CollectionSync (method, model, options) {
+var collectionSync = function CollectionSync(method, model, options) {
   var params = _.extend({}, options);
 
   //get the url
@@ -35,36 +35,32 @@ var collectionSync = function CollectionSync (method, model, options) {
     data = [];
 
   ss(io).emit(namespace + ':' + method, stream, params.data || {},
-  function(err) {
-    if(err) {
-      options.error(err);
-    }
-  });
+    function(err) {
+      if (err) {
+        defer.reject(err);
+        options.error(err);
+      }
+    });
 
   stream.on('readable', function() {
     var string = stream.read();
     if (string) {
       var parsedDoc = JSON.parse(string);
       if (params.realtime) {
-        self.add(parsedDoc, {merge:params.merge || true});
-      } else {
-        data.push(parsedDoc);
+        self.add(parsedDoc, {
+          merge: params.merge || true
+        });
       }
+      data.push(parsedDoc);
       defer.notify(parsedDoc);
     }
   });
 
   stream.on('end', function() {
-    if(!params.realtime) {
-      self.add(data, {merge:params.merge || true});
-      defer.resolve(data);
-    } else {
-      defer.resolve(true);
-    }
-
     if (options.success) {
       options.success(data);
     }
+    defer.resolve(data);
   });
 
   stream.on('error', function(err) {

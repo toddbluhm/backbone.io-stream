@@ -36,7 +36,7 @@ module.exports = function(grunt) {
 
     browserify: {
       standaloneUMD: {
-        src: [ '<%= pkg.name %>.js' ],
+        src: ['<%= pkg.name %>.js'],
         dest: './browser/dist/<%= pkg.name %>.standalone.js',
         options: {
           browserifyOptions: {
@@ -46,10 +46,10 @@ module.exports = function(grunt) {
       },
 
       requireUMD: {
-        src: [ '<%= pkg.name %>.js' ],
+        src: ['<%= pkg.name %>.js'],
         dest: './browser/dist/<%= pkg.name %>.require.js',
         options: {
-          alias: [ './../<%= pkg.name %>:' ],
+          alias: ['./../<%= pkg.name %>:'],
           external: ['underscore', 'backbone', 'socket.io-stream'],
           browserifyOptions: {
             standalone: '<%= pkg.name %>'
@@ -58,7 +58,7 @@ module.exports = function(grunt) {
       },
 
       tests: {
-        src: [ 'browser/test/suite.js' ],
+        src: ['browser/test/suite.js'],
         dest: './browser/test/browserified_tests.js',
         options: {
           exclude: ['jsdom'],
@@ -71,10 +71,12 @@ module.exports = function(grunt) {
     uglify: {
       dist: {
         files: {
-          'browser/dist/<%= pkg.name %>.standalone.min.js':
-              ['<%= browserify.standaloneUMD.dest %>'],
-          'browser/dist/<%= pkg.name %>.require.min.js':
-              ['<%= browserify.requireUMD.dest %>'],
+          'browser/dist/<%= pkg.name %>.standalone.min.js': [
+            '<%= browserify.standaloneUMD.dest %>'
+          ],
+          'browser/dist/<%= pkg.name %>.require.min.js': [
+            '<%= browserify.requireUMD.dest %>'
+          ],
         }
       }
     },
@@ -106,6 +108,12 @@ module.exports = function(grunt) {
       }
     },
 
+    jsbeautifier: {
+      files: ['*.js', '*.json', 'test/*.js'],
+      options: {
+        config: './.jsbeautifyrc'
+      }
+    }
   });
 
   // Load plug-ins
@@ -115,9 +123,11 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-mocha-phantomjs');
+  grunt.loadNpmTasks('grunt-jsbeautifier');
 
   // define tasks
   grunt.registerTask('default', [
+    'jsbeautifier',
     'jshint',
     'connect:testServer',
     'mochaTest',
@@ -125,5 +135,12 @@ module.exports = function(grunt) {
     'uglify',
     'connect:phantomServer',
     'mocha_phantomjs',
+  ]);
+
+  grunt.registerTask('test', [
+    'jsbeautifier',
+    'jshint',
+    'connect:testServer',
+    'mochaTest',
   ]);
 };

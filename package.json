@@ -7,7 +7,7 @@
     "test": "grunt"
   },
   "main": "./backbone.io-stream",
-  "repository":"",
+  "repository": "",
   "devDependencies": {
     "chai": "^1.9.1",
     "grunt": "^0.4.5",
@@ -19,7 +19,8 @@
     "grunt-mocha-test": "^0.11.0",
     "jsdom": "^1.0.0-pre.6",
     "mocha": "^1.21.4",
-    "socket.io-client": "^1.0.6"
+    "socket.io-client": "^1.0.6",
+    "grunt-jsbeautifier": "^0.2.7"
   },
   "dependencies": {
     "backbone": "^1.1.2",

@@ -3,7 +3,7 @@ var _ = require('underscore'),
   Backbone = require('backbone'),
   ss = require('socket.io-stream');
 
-var collectionSync = function CollectionSync (method, model, options) {
+var collectionSync = function CollectionSync(method, model, options) {
   var params = _.extend({}, options);
 
   //get the url
@@ -35,32 +35,33 @@ var collectionSync = function CollectionSync (method, model, options) {
     }),
     data = [];
 
-  ss(io).emit(namespace + ':' + method, stream, params.data);
+  ss(io).emit(namespace + ':' + method, stream, params.data || {},
+    function(err) {
+      if (err) {
+        defer.reject(err);
+        options.error(err);
+      }
+    });
 
   stream.on('readable', function() {
     var string = stream.read();
     if (string) {
       var parsedDoc = JSON.parse(string);
       if (params.realtime) {
-        self.add(parsedDoc, {merge:params.merge || true});
-      } else {
-        data.push(parsedDoc);
+        self.add(parsedDoc, {
+          merge: params.merge || true
+        });
       }
+      data.push(parsedDoc);
       defer.notify(parsedDoc);
     }
   });
 
   stream.on('end', function() {
-    if(!params.realtime) {
-      self.add(data, {merge:params.merge || true});
-      defer.resolve(data);
-    } else {
-      defer.resolve(true);
-    }
-
     if (options.success) {
       options.success(data);
     }
+    defer.resolve(data);
   });
 
   stream.on('error', function(err) {
@@ -30607,9 +30608,9 @@ if (typeof window === 'undefined') {
 //jshint ignore:end
 
 var Backbone = require('backbone'),
-    BackboneIoStream = require('./../backbone.io-stream'),
-    io = require('socket.io-client')('http://127.0.0.1:1337'),
-    should = require('chai').should();
+  BackboneIoStream = require('./../backbone.io-stream'),
+  io = require('socket.io-client')('http://127.0.0.1:1337'),
+  should = require('chai').should();
 
 describe('Collection Streaming', function() {
   var TestModel, TestCollection;
@@ -30638,46 +30639,53 @@ describe('Collection Streaming', function() {
       var testCollection = new TestCollection();
 
       testCollection.fetch()
-      .then(function(val) {
-        val.should.be.Array;
-        val.should.have.length(2);
-        testCollection.should.have.length(2);
-        done_();
-      })
-      .fail(done_);
+        .then(function(val) {
+          val.should.be.Array;
+          val.should.have.length(2);
+          testCollection.models.should.have.length(2);
+          done_();
+        })
+        .fail(done_);
     });
-    it('should notify promise as data chunk is retrieved', function(done_) {
+    it('should notify promise as data chunk is retrieved', function(
+      done_) {
       var testCollection = new TestCollection();
 
       var notificationCalls = 0;
       testCollection.fetch()
-      .progress(function(deStringifiedData) {
-        notificationCalls++;
-        deStringifiedData.should.have.property('_id', notificationCalls);
-      })
-      .fail(done_)
-      .done(function() {
-        notificationCalls.should.equal(2);
-        done_();
-      });
+        .progress(function(deStringifiedData) {
+          notificationCalls++;
+          deStringifiedData.should.have.property(
+            '_id', notificationCalls);
+        })
+        .fail(done_)
+        .done(function() {
+          notificationCalls.should.equal(2);
+          done_();
+        });
     });
-    it('should update collection as data is streaming in if realtime option' +
-    ' set', function(done_) {
-      var testCollection = new TestCollection();
+    it(
+      'should update collection as data is streaming in if realtime option' +
+      ' set', function(done_) {
+        var testCollection = new TestCollection();
 
-      var modelsAdded = 0;
-      testCollection.fetch({realtime:true})
-      .fail(done_)
-      .done(function() {
-        modelsAdded.should.equal(2);
-        done_();
-      });
+        var modelsAdded = 0;
+        testCollection.fetch({
+          realtime: true
+        })
+          .fail(done_)
+          .done(function() {
+            modelsAdded.should.equal(2);
+            testCollection.models.should.have.length(2);
+            done_();
+          });
 
-      testCollection.on('add', function(newModel) {
-        modelsAdded++;
-        newModel.should.have.deep.property('attributes._id', modelsAdded);
+        testCollection.on('add', function(newModel) {
+          modelsAdded++;
+          newModel.should.have.deep.property(
+            'attributes._id', modelsAdded);
+        });
       });
-    });
   });
 });
 
