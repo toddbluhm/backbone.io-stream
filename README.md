@@ -1,6 +1,8 @@
 backbone.io-stream
 =====================
 
+[![Circle CI](https://circleci.com/gh/toddbluhm/backbone.io-stream.svg?style=shield&circle-token=f92a4ca4bd9b0177059dbf6d77d244edf5c398db)](https://circleci.com/gh/toddbluhm/backbone.io-stream)
+
 A drop-in replacement for Backbones Collection's Sync method that uses socket.io and socket.io-streaming to stream data to the collection from a fetch request.
 
 Performing a fetch will return a jQuery promise that reports progress notifications as each new model is streamed from the server.
