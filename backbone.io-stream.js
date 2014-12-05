@@ -1,6 +1,8 @@
 var _ = require('underscore'),
   Backbone = require('backbone'),
-  ss = require('socket.io-stream');
+  ss = require('socket.io-stream'),
+  $ = require('jquery'),
+  uuid = require('node-uuid');
 
 var collectionSync = function CollectionSync(method, model, options) {
   var params = _.extend({}, options);
@@ -28,46 +30,39 @@ var collectionSync = function CollectionSync(method, model, options) {
   //'fetch', 'save', 'remove' etc
   var self = this,
     defer = $.Deferred(),
-    stream = ss.createStream({
-      encoding: 'utf8',
-      decodeStrings: true
-    }),
-    data = [];
+    data = [],
+    _uuid = uuid.v4();
 
-  ss(io).emit(namespace + ':' + method, stream, params.data || {},
-    function(err) {
-      if (err) {
-        defer.reject(err);
-        options.error(err);
+  io.emit(namespace + ':' + method, _uuid, params.data);
+
+  ss(io).on(_uuid, function(stream) {
+    stream.on('readable', function() {
+      var string = stream.read();
+      if (string) {
+        var parsedDoc = JSON.parse(string);
+        if (params.realtime) {
+          self.add(parsedDoc, {
+            merge: params.merge || true
+          });
+        }
+        data.push(parsedDoc);
+        defer.notify(parsedDoc);
       }
     });
 
-  stream.on('readable', function() {
-    var string = stream.read();
-    if (string) {
-      var parsedDoc = JSON.parse(string);
-      if (params.realtime) {
-        self.add(parsedDoc, {
-          merge: params.merge || true
-        });
+    stream.on('end', function() {
+      if (options.success) {
+        options.success(data);
       }
-      data.push(parsedDoc);
-      defer.notify(parsedDoc);
-    }
-  });
+      defer.resolve(data);
+    });
 
-  stream.on('end', function() {
-    if (options.success) {
-      options.success(data);
-    }
-    defer.resolve(data);
-  });
-
-  stream.on('error', function(err) {
-    defer.reject(err);
-    if (options.error) {
-      options.error(err);
-    }
+    stream.on('error', function(err) {
+      defer.reject(err);
+      if (options.error) {
+        options.error(err);
+      }
+    });
   });
 
   var prom = defer.promise();

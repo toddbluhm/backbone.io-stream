@@ -10,19 +10,24 @@ Performing a fetch will return a jQuery promise that reports progress notificati
 Options
 -------
 
-- realtime
-If you pass in the option "realtime: true" to the fetch method, the models will be added to the collection as they are streamed in from the server, otherwise it will wait until streaming has ended before adding the models to the collection.
+- **realtime**<br>
+If you pass in the option `realtime: true` to the fetch method, the models will be added to the collection as they are streamed in from the server, otherwise it will wait until streaming has ended before adding the models to the collection.
 
-- merge
-By default all new models will be merged into the collection, but that can be overridden by passing "merge: false" to the fetch method
+- **merge**<br>
+By default all new models will be merged into the collection, but that can be overridden by passing `merge: false` to the fetch method
 
 **Note:**
-If successful, the jQuery promise will return an array of objects that was returned from the server, unless the "realtime" option was set, in which case it will just return true
+If successful, the jQuery promise will return an array of objects that was returned from the server, unless the `realtime` option was set, in which case it will just return true
 
 Tests
 ----------
-To run the tests navigate to project directory and type: "grunt" or "npm test"
-That will compile and run the test cases
+**Node Tests**<br>
+To run the tests navigate to project directory and type: `grunt test` or `npm test`.
+
+**Browser tests**<br>
+To run browser tests, run command `grunt testServer` and that will start a local server. Go to `localhost:8000` and the mocha test page will pop up showing the test results.
+
+While this is certainly not ideal for browser tests, websocket support in headless browsers is greatly lacking currently.
 
 Versions
 -------------
@@ -39,11 +44,11 @@ Dependencies
 - Socket.io-stream
 - Socket.io/Socket.io-client.
 
+Compile Browser Files
+----------
+To compile the browser files yourself (instead of using the ones in dist), run `npm run-script compile` or `grunt default`.
+
 Examples
 --------
-A very basic example of the server side can be found in the test/testServer.js file. 
+A very basic example of the server side can be found in the test/testServer.js file.
 A more real world use case would be piping a Mongoosejs QueryStream to the socket.io stream.
-
-Notes
------
-- Currently phantomjs test cases fail as phantomjs does not fully implement the latest websocket standard.

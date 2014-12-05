@@ -3,14 +3,11 @@ if (typeof window === 'undefined') {
   var jsdom = require('jsdom').jsdom;
   var document = jsdom('<html><head></head><body></body></html>');
   window = document.parentWindow;
-  $ = require('jquery');
-} else {
-  $ = require('jquery')
 }
-
 //jshint ignore:end
 
-var Backbone = require('backbone'),
+var $ = require('jquery'),
+  Backbone = require('backbone'),
   BackboneIoStream = require('./../backbone.io-stream'),
   io = require('socket.io-client')('http://127.0.0.1:1337'),
   should = require('chai').should();
@@ -50,11 +47,10 @@ describe('Collection Streaming', function() {
         })
         .fail(done_);
     });
-    it('should notify promise as data chunk is retrieved', function(
-      done_) {
-      var testCollection = new TestCollection();
+    it('should notify promise as data chunk is retrieved', function(done_) {
+      var testCollection = new TestCollection(),
+        notificationCalls = 0;
 
-      var notificationCalls = 0;
       testCollection.fetch()
         .progress(function(deStringifiedData) {
           notificationCalls++;
@@ -67,27 +63,25 @@ describe('Collection Streaming', function() {
           done_();
         });
     });
-    it(
-      'should update collection as data is streaming in if realtime option' +
-      ' set', function(done_) {
-        var testCollection = new TestCollection();
+    it('should update collection as data is streaming in if realtime option set', function(done_) {
+      var testCollection = new TestCollection(),
+        modelsAdded = 0;
 
-        var modelsAdded = 0;
-        testCollection.fetch({
+      testCollection.fetch({
           realtime: true
         })
-          .fail(done_)
-          .done(function() {
-            modelsAdded.should.equal(2);
-            testCollection.models.should.have.length(2);
-            done_();
-          });
-
-        testCollection.on('add', function(newModel) {
-          modelsAdded++;
-          newModel.should.have.deep.property(
-            'attributes._id', modelsAdded);
+        .fail(done_)
+        .done(function() {
+          modelsAdded.should.equal(2);
+          testCollection.models.should.have.length(2);
+          done_();
         });
+
+      testCollection.on('add', function(newModel) {
+        modelsAdded++;
+        newModel.should.have.deep.property(
+          'attributes._id', modelsAdded);
       });
+    });
   });
 });

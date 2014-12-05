@@ -14,9 +14,9 @@
     <script src="../../node_modules/mocha/mocha.js"></script>
     <script>
       'use strict';
-      mocha.setup('bdd')
-      mocha.slow(500)
-      mocha.timeout(3000)
+      mocha.setup('bdd');
+      mocha.slow(500);
+      mocha.timeout(3000);
     </script>
 
     <!-- load test suite -->
@@ -25,9 +25,9 @@
     <!-- kick of tests -->
     <script>
       if (window.mochaPhantomJS) {
-        window.mochaPhantomJS.run()
+        window.mochaPhantomJS.run();
       } else {
-        mocha.run()
+        mocha.run();
       }
     </script>
   </body>

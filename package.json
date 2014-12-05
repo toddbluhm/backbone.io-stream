@@ -1,34 +1,39 @@
 {
   "name": "backbone.io-stream",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": "Todd Bluhm",
-  "description": "This package extends backbone.sync method to support sending streams over socket.io using socket.io-streaming to backbone models and collections",
+  "description": "This package extends backbone.sync method to support sending streams over socket.io using socket.io-streaming to backbone collections",
   "scripts": {
-    "test": "grunt default"
+    "test": "grunt test",
+    "compile": "grunt default"
   },
   "main": "./backbone.io-stream",
-  "repository": "",
+  "repository": "https://github.com/toddbluhm/backbone.io-stream",
   "devDependencies": {
-    "chai": "^1.9.1",
+    "chai": "~1.10.0",
+    "grunt": "~0.4.5",
+    "grunt-browserify": "~3.2.1",
     "grunt-cli": "*",
-    "grunt": "^0.4.5",
-    "grunt-browserify": "^3.0.1",
-    "grunt-contrib-connect": "^0.8.0",
-    "grunt-contrib-jshint": "^0.10.0",
-    "grunt-contrib-uglify": "^0.5.1",
-    "grunt-mocha-phantomjs": "^0.6.0",
-    "grunt-mocha-test": "^0.11.0",
-    "jsdom": "^1.0.0-pre.6",
-    "mocha": "^1.21.4",
-    "socket.io-client": "^1.0.6",
-    "grunt-jsbeautifier": "^0.2.7"
+    "grunt-contrib-connect": "~0.9.0",
+    "grunt-contrib-jshint": "~0.10.0",
+    "grunt-contrib-uglify": "~0.6.0",
+    "grunt-jsbeautifier": "~0.2.7",
+    "grunt-mocha-phantomjs": "~0.6.0",
+    "grunt-mocha-test": "~0.12.4",
+    "jsdom": "~1.3.1",
+    "mocha": "~2.0.1",
+    "socket.io-client": "~1.2.1"
   },
   "dependencies": {
-    "backbone": "^1.1.2",
-    "jquery": "^2.1.1",
-    "readable-stream": "^1.0.31",
-    "socket.io": "^1.0.6",
-    "socket.io-stream": "^0.5.3",
-    "underscore": "^1.6.0"
+    "backbone": "~1.1.2",
+    "jquery": "~2.1.1",
+    "node-uuid": "~1.4.2",
+    "readable-stream": "~1.0.33",
+    "socket.io": "~1.2.1",
+    "socket.io-stream": "~0.6.0",
+    "underscore": "~1.7.0"
+  },
+  "engine": {
+    "node": ">=0.10.0"
   }
 }

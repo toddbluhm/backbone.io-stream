@@ -23,16 +23,12 @@ module.exports = function(grunt) {
     mochaTest: {
       test: {
         options: {
-          reporter: 'spec'
+          reporter: 'spec',
+          timeout: 10000
         },
         src: ['test/**/*.js']
       }
     },
-
-    // clean: {
-    //   dist: ['./browser/dist/**/*'],
-    //   tests: ['./browser/test/browserified_tests.js'],
-    // },
 
     browserify: {
       standaloneUMD: {
@@ -89,21 +85,11 @@ module.exports = function(grunt) {
           onCreateServer: require('./test/testServer')
         }
       },
-      phantomServer: {
+      hostServer: {
         options: {
           port: 8000,
-          base: '.'
-        }
-      }
-    },
-
-    // run the mocha tests in the browser via PhantomJS
-    'mocha_phantomjs': {
-      all: {
-        options: {
-          urls: [
-            'http://127.0.0.1:8000/browser/test/index.html'
-          ]
+          hostname: '127.0.0.1',
+          base: ['.', './browser','./browser/test/']
         }
       }
     },
@@ -122,7 +108,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-connect');
-  grunt.loadNpmTasks('grunt-mocha-phantomjs');
   grunt.loadNpmTasks('grunt-jsbeautifier');
 
   // define tasks
@@ -133,8 +118,6 @@ module.exports = function(grunt) {
     'mochaTest',
     'browserify',
     'uglify',
-    'connect:phantomServer',
-    'mocha_phantomjs',
   ]);
 
   grunt.registerTask('test', [
@@ -142,5 +125,10 @@ module.exports = function(grunt) {
     'jshint',
     'connect:testServer',
     'mochaTest',
+  ]);
+
+  grunt.registerTask('testServer', [
+    'connect:testServer',
+    'connect:hostServer:keepalive'
   ]);
 };

@@ -26,7 +26,12 @@ function TestServer(server, connect, options) {
   }];
 
   io.on('connection', function(socket) {
-    ss(socket).on('testModels:read', function(stream, data) {
+    socket.on('testModels:read', function(uuid, data) {
+      var stream = ss.createStream({
+        encoding: 'utf8',
+        decodeStrings: true
+      });
+      ss(socket).emit(uuid, stream);
       if (!data || (data instanceof Array && data.length === 0)) {
         _.each(testModels, function(model) {
           stream.write(JSON.stringify(model));

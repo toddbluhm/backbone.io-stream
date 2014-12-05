@@ -13,7 +13,7 @@
   "latedef": false,
   "maxcomplexity": 20,
   "maxdepth": 4,
-  "maxlen": 80,
+  "maxlen": 100,
   "maxparams": 4,
   "maxstatements": 300,
   "newcap": true,
@@ -26,7 +26,6 @@
   "undef": true,
   "node": true,
   "browser": true,
-  "jquery": true,
   "globals": {
     "after": true,
     "afterEach": true,
